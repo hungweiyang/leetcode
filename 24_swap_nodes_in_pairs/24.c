@@ -8,23 +8,21 @@
 
 
 struct ListNode* swapPairs(struct ListNode* head){
-    
-    struct ListNode **p= &head;
-    
-    for (; *p;)
+    struct ListNode **p1 = &head;
+    struct ListNode **p2 = malloc(sizeof(struct ListNode*) * 2); 
+
+    for (; *p1;)
     {
-        struct ListNode *first = *p;
-        struct ListNode *second = (*p)->next;
-        if (!second)
+        p2[0] = *p1;
+        p2[1] = (*p1)->next;
+        if (!p2[1])
             break;
-        struct ListNode *third = (*p)->next->next;
         
-        *p = second;
-        first->next = third;
-        second->next = first;
-        p = &first->next;
+        *p1 = p2[1];
+        p2[0]->next = p2[1]->next;
+        p2[1]->next = p2[0];
+        p1 = &p2[0]->next;
     }
     
     return head;
-
 }
