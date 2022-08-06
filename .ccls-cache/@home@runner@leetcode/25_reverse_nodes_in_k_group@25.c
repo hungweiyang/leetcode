@@ -6,31 +6,37 @@ struct ListNode {
   struct ListNode *next;
 };
 
-struct ListNode *reverseKGroup(struct ListNode *head, int k) {
+typedef struct ListNode Node;
 
-  struct ListNode **p1 = &head;
-  struct ListNode **p2 = malloc(sizeof(struct ListNode *) * k);
-
-  for (; *p1;) {
-    int i;
-    struct ListNode *it = *p1;
-    for (i = 0; i < k && it; i++) {
-      p2[i] = it;
-      it = it->next;
-    }
-
-    if (i < k)
-      break;
-
-    *p1 = p2[k - 1];
-    p2[0]->next = p2[k - 1]->next;
-    for (i = k - 1; i >= 1; i--) {
-      p2[i]->next = p2[i - 1];
-    }
-    p1 = &p2[0]->next;
+struct ListNode *ReverseOneGroup(Node *prev, Node *next) {
+  struct ListNode *last = prev->next, *curr = last->next;
+  while (curr != next) {
+    last->next = curr->next;
+    curr->next = prev->next;
+    prev->next = curr;
+    curr = last->next;
   }
 
-  return head;
+  return last;
+}
+
+struct ListNode *reverseKGroup(struct ListNode *curr, int k) {
+  struct ListNode *dummy = malloc(sizeof(struct ListNode));
+  dummy->next = curr;
+  dummy->val = -1;
+
+  struct ListNode *prev = dummy;
+
+  for (int i = 1; curr; i++) {
+    if ((i % k) == 0) {
+      prev = ReverseOneGroup(prev, curr->next);
+      curr = prev->next;
+    } else {
+      curr = curr->next;
+    }
+  }
+
+  return dummy->next;
 }
 
 void InsertNode(struct ListNode **phead, int val) {
@@ -55,11 +61,11 @@ void Traverse(struct ListNode *head) {
 
 int main(int argc, char *argv[]) {
   struct ListNode *head = NULL;
-  InsertNode(&head, 1);
-  InsertNode(&head, 2);
-  InsertNode(&head, 3);
-  InsertNode(&head, 4);
-  InsertNode(&head, 5);
+  // InsertNode(&head, 1);
+  // InsertNode(&head, 2);
+  // InsertNode(&head, 3);
+  // InsertNode(&head, 4);
+  // InsertNode(&head, 5);
 
   Traverse(head);
 
